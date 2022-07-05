@@ -19,7 +19,6 @@ class Game
       		@choice << random_choice
     	end
     	puts @choice
-    	@cleaned_computer_choice = (@choice[6] + @choice[18] + @choice[30] + @choice[42]).to_s
   	end
 
   	def get_player_guess
@@ -40,10 +39,10 @@ class Game
   	end
 
   	def evaluate_matches(cleaned_player_choice)
+		@cleaned_computer_choice = (@choice[6] + @choice[18] + @choice[30] + @choice[42]).to_s
 		@evaluation = Evaluate.new.evaluate_matches(@cleaned_computer_choice, cleaned_player_choice)
 		@round += 1
-		draw_board(cleaned_player_choice)
-		
+		draw_board(cleaned_player_choice)	
 	end
 
   	def draw_board(cleaned_player_choice)
@@ -52,7 +51,6 @@ class Game
       		ascii_player_choice << COLOURS.find { |y| y.match(/#{cleaned_player_choice[x]}/) }
       		x += 1
     	end
-
     	@board.append([@round.to_s + ". " + ascii_player_choice + "  " + @evaluation])
     	puts @board
     	@evaluation.clear
@@ -60,7 +58,7 @@ class Game
   	end
 
   	def check_round_count
-    	@round == 12 ? "Game Over!" : get_player_guess
+    	@round == 12 ? "Game Over!" : get_player_guess 
   	end
 end
 
