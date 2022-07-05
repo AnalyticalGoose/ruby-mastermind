@@ -14,43 +14,45 @@ class Game
   	end
 
   	def random_colours 
-    	4.times do
-      		random_choice = COLOURS.sample
-      		@choice << random_choice
-    	end
-    	puts @choice
+    	4.times { @choice << COLOURS.sample }
   	end
 
   	def get_player_guess
-    	puts "Please enter your guess! e.g. 'RGBY' or 'MTBR'"
+    	puts "Please enter your guess! e.g. 'RGBY' or 'MTBR'. Available colours are: R,G,B,Y,M,T"
     	player_guess = gets.chomp
-    	check_valid_guess(player_guess)
+    	string_cleanup(player_guess)
   	end
 
+	def string_cleanup(player_guess)
+		cleaned_player_choice = player_guess.gsub(/[^RGBYMT]/i, "").strip.upcase
+		@cleaned_computer_choice = (@choice[6] + @choice[18] + @choice[30] + @choice[42]).to_s
+		check_valid_guess(cleaned_player_choice)
+	end
 
-  	def check_valid_guess(player_guess)
-    	cleaned_player_choice = player_guess.gsub(/[^RGBYMT]/i, "").strip.upcase
-    
+  	def check_valid_guess(cleaned_player_choice)   
     	if cleaned_player_choice.length == 4 
-      	evaluate_matches(cleaned_player_choice)
+      		evaluate_matches(cleaned_player_choice)
     	else
-      	(puts "Invalid input")
+      		(puts "Invalid input")
     	end
   	end
 
   	def evaluate_matches(cleaned_player_choice)
-		@cleaned_computer_choice = (@choice[6] + @choice[18] + @choice[30] + @choice[42]).to_s
 		@evaluation = Evaluate.new.evaluate_matches(@cleaned_computer_choice, cleaned_player_choice)
 		@round += 1
 		draw_board(cleaned_player_choice)	
 	end
 
-  	def draw_board(cleaned_player_choice)
-    	ascii_player_choice = ""
-    	4.times do |x = 0|
-      		ascii_player_choice << COLOURS.find { |y| y.match(/#{cleaned_player_choice[x]}/) }
-      		x += 1
-    	end
+	def colourise_choice(cleaned_player_choice)
+		ascii_player_choice = ""
+		4.times do |x = 0|
+			ascii_player_choice << COLOURS.find { |y| y.match(/#{cleaned_player_choice[x]}/) }
+			x += 1
+	 	 end
+		draw_board(ascii_player_choice)
+	end
+
+  	def draw_board(ascii_player_choice)	
     	@board.append([@round.to_s + ". " + ascii_player_choice + "  " + @evaluation])
     	puts @board
     	@evaluation.clear

@@ -13,17 +13,17 @@ module EvaluateMatches
 			a = ""
 			b = ""
 
-			if answer == guess
-				abort "Winner!!!"
-			end
+			# if answer == guess
+			# 	abort "Winner!!!"
+			# end
 
-			4.times do |x = 0|
+			4.times do |x = 0| 																	# << 1.
 				answer[x] == guess[x] ? @bool.push(true) && @feedback << ("\e[31m■  \e[0m") : 
-				@bool.push(false) && a << guess[x] && b << answer[x]
+				@bool.push(false) && a << guess[x] && b << answer[x] 							# << 2.
 				x += 1
 			end
 
-			a.chars.intersection(b.chars).length.times do
+			a.chars.intersection(b.chars).length.times do 										# << 3.
 				@feedback << ("\e[37m■  \e[0m")
 			end
 		return @feedback
