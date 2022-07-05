@@ -1,42 +1,32 @@
 require_relative 'evaluation.rb'
-
 include EvaluateMatches
 
+module SolverModule   
+    class Solver
+        def initialize
+            @response = ""
+        end
 
+        # Generate array with every combination of colours
 
+        def create_s
+            colours = ["R", "G", "B", "Y", "M", "T"]
+            s = colours.product(*[colours] * 3).map(&:join)
+            return s
+        end
 
+        # Evaluate the matches from the guess
 
-colours = ["R", "G", "B", "Y", "M", "T"]
-s = colours.product(*[colours] * 3).map(&:join)
+        def get_evaluation(code, guess)
+            @response = Evaluate.new.evaluate_matches(code, guess)
+        end
 
-guess = "RRGM"
-answer = "RRGY"
-@response = ""
+        # Prune any elements of s that would not have produced the same evaluation if they were the secret code
 
-
-def get_evaluation(answer, guess)
-    @response = Evaluate.new.evaluate_matches(answer, guess)
+        def prune_s(guess, s)
+            s.delete(guess)
+            s.delete_if { |x| Evaluate.new.evaluate_matches(x, guess) != @response }
+            return s
+        end
+    end
 end
-
-def prune_s(guess, s, z)
-    s.delete_if { |x| Evaluate.new.evaluate_matches(x, guess) != @response }
-end
-
-
-
-puts get_evaluation(answer, guess)
-
-prune_s(guess, s, 0)
-p s.length
-
-
-
-
-#     s.each { |x|
-#         evaluation = Evaluate.new.evaluate_matches(x, guess)
-#         z += 1
-#         if evaluation != @response
-#             s.delete(x)
-#         end
-#     }
-# puts z

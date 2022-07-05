@@ -14,7 +14,7 @@ class Game
   	end
 
   	def random_colours 
-    	4.times { @choice << COLOURS.sample }
+    	4.times { @choice << COLOURS.sample } # Generate 4 random colours
   	end
 
   	def get_player_guess
@@ -24,6 +24,10 @@ class Game
   	end
 
 	def string_cleanup(player_guess)
+
+		# Cleanup the user input to remove spaces, symbols and other characters
+		# Generate a plaintext string of the secret code for future use
+
 		cleaned_player_choice = player_guess.gsub(/[^RGBYMT]/i, "").strip.upcase
 		@cleaned_computer_choice = (@choice[6] + @choice[18] + @choice[30] + @choice[42]).to_s
 		check_valid_guess(cleaned_player_choice)
@@ -38,12 +42,15 @@ class Game
   	end
 
   	def evaluate_matches(cleaned_player_choice)
-		@evaluation = Evaluate.new.evaluate_matches(@cleaned_computer_choice, cleaned_player_choice)
-		@round += 1
-		draw_board(cleaned_player_choice)	
+		if @cleaned_computer_choice == cleaned_player_choice
+			abort "Winnnnnnerrrrrr!"
+		end
+			@evaluation = Evaluate.new.evaluate_matches(@cleaned_computer_choice, cleaned_player_choice)
+			@round += 1
+			colourise_choice(cleaned_player_choice)
 	end
 
-	def colourise_choice(cleaned_player_choice)
+	def colourise_choice(cleaned_player_choice) # Generate coloured string to print on the game-board
 		ascii_player_choice = ""
 		4.times do |x = 0|
 			ascii_player_choice << COLOURS.find { |y| y.match(/#{cleaned_player_choice[x]}/) }
@@ -63,7 +70,3 @@ class Game
     	@round == 12 ? "Game Over!" : get_player_guess 
   	end
 end
-
-game = Game.new
-game.random_colours
-game.get_player_guess
